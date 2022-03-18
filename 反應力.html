@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反應力</title>
+    <style>
+        .body-change {
+            background-color: green;
+            
+        }
+        .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 250px;
+        }
+        .btn{
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>畫面變色時請點擊</h1>
+        <button class="btn">再玩一次</button>
+    </div>
+    <script>
+        let clickTime
+        let changeTime
+        let round //過早按的話還是會變色所以要設置一個變數來cleartime
+        function colorChange() {
+            document.removeEventListener('click', tooEarly)
+            let body = document.querySelector('body')
+            body.classList.add('body-change')
+            changeTime = new Date().getTime()
+            document.addEventListener('click', clickWhenColorChange)
+        }
+        function clickWhenColorChange() {
+            clickTime = new Date().getTime()//這是毫秒數
+            const result = (clickTime - changeTime) / 1000
+            alert('你的成績是' + result + '秒')
+            document.removeEventListener('click', clickWhenColorChange)
+            gameEnd()
+        }
+        function tooEarly() {
+            alert('點太早了')
+            clearTimeout(round)
+            document.removeEventListener('click', tooEarly)//刪除addEventListener不然還會再觸發一次
+            gameEnd()
+        }
+        function randomTime() {
+            return (Math.random() * 2 + 1) * 1000
+        }
+        function start(params) {
+            document.addEventListener('click', tooEarly)
+            round = window.setTimeout(colorChange, randomTime())
+        }
+        function gameEnd() {
+            document.querySelector('button').classList.remove('btn')
+            restart()
+        }
+        function restart() {
+            document.querySelector('button').addEventListener('click',function restartButton() {
+                window.location.reload()
+            })
+        }
+        start()
+    </script>
+</body>
+
+</html>
